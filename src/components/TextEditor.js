@@ -26,10 +26,7 @@ const TextEditor = ({
   return (
     <div
       className="text-container"
-      style={{
-        ...getComponentStyle(left, top, isDragging, true, isPreviewMode),
-        pointerEvents: isPreviewMode ? "none" : "auto", // Set pointerEvents correctly
-      }}
+      style={getComponentStyle(left, top, isDragging, true, isPreviewMode)}
       ref={!isPreviewMode ? drag : null}
     >
       {!isPreviewMode && (

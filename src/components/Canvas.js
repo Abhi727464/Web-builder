@@ -23,7 +23,7 @@ const Canvas = ({ isPreviewMode }) => {
   };
 
   // Moves a component
-  const moveBox = useCallback(
+  const moveComponent = useCallback(
     (id, left, top) => {
       const component = components.find((comp) => comp.id === id);
       if (component) {
@@ -96,12 +96,12 @@ const Canvas = ({ isPreviewMode }) => {
           );
 
           item.id
-            ? moveBox(item.id, newLeft, newTop)
+            ? moveComponent(item.id, newLeft, newTop)
             : addComponent(item.type, newLeft, newTop);
         }
       },
     }),
-    [moveBox, addComponent]
+    [moveComponent, addComponent]
   );
 
   // Deletes a component

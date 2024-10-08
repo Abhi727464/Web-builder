@@ -37,7 +37,6 @@ const ImageComponent = ({ id, left, top, isPreviewMode, deleteComponent }) => {
       <input
         style={{
           cursor: !isPreviewMode ? "move" : "",
-          pointerEvents: isPreviewMode ? "none" : "",
         }}
         className="img-box"
         type="file"
