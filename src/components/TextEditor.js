@@ -1,42 +1,42 @@
 import React, { useState } from "react";
-import { Editor, EditorState, RichUtils } from "draft-js";
-import "draft-js/dist/Draft.css";
 import { useDrag } from "react-dnd";
+import { getDraggingStyles } from "./Canvas";
 
-function TextEditor({ isPreviewMode, id, type, left, top }) {
-  const [text, setText] = useState("Enter Any input");
+const TextBox = ({ id, type, left, top, isPreview, onRemove }) => {
+  const [text, setText] = useState("Enter the content input");
 
-  //   const [{ isDragging }, drag] = useDrag(
-  //     () => ({
-  //       type: type, // Type of draggable item
-  //       item: { id, left, top, type: type }, // Data about the draggable item
-  //       collect: (monitor) => ({
-  //         isDragging: monitor.isDragging(), // Track dragging state
-  //       }),
-  //     }),
-  //     [id, left, top, type] // Dependencies for the drag hook
-  //   );
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: type,
+      item: { id, left, top, type, width: 340, height: 50 }, // Added width and height here
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+    }),
+    [id, left, top, type]
+  );
 
   return (
     <div
-    //   style={getDraggingStyles(left, top, isDragging, true, isPreview)}
-    //   ref={!isPreviewMode ? drag : null}
+      className="text-container"
+      style={getDraggingStyles(left, top, isDragging, true, isPreview)}
+      ref={!isPreview ? drag : null}
     >
-      {/* {!isPreviewMode && (
+      {!isPreview && (
         <div onClick={() => onRemove(id)}>
-          <span className="remove-icon">X</span>
+          <span>x</span>
         </div>
-      )} */}
+      )}
       <input
-        placeholder="Input Box"
+        placeholder="placeholder"
         value={text}
         onChange={(e) => setText(e.target.value)}
         autoFocus
+        style={{ cursor: !isPreview ? "move" : "" }}
         className="text-editor"
-        // style={{ cursor: !isPreviewMode ? "move" : "" }}
       />
     </div>
   );
-}
+};
 
-export default TextEditor;
+export default TextBox;

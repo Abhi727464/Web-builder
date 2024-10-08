@@ -1,29 +1,44 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useDrag } from "react-dnd";
+// import { FaTimes } from "react-icons/fa"; // FontAwesome icon for close button
+import { getDraggingStyles, ItemTypes } from "./Canvas";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+const ButtonBox = ({ id, left, top, isPreviewMode, onRemove }) => {
+  const [text, setText] = useState("Click me"); // State to store button text
+  const [editing, setEditing] = useState(false); // State to manage editing mode
+  const inputRef = useRef(null); // Reference to the input element
 
-const ButtonComponent = ({ isPreviewMode, removeComponent, id }) => {
-  const [buttonText, setButtonText] = useState("button");
-  const [isButtonTextEditable, setIsButtonTextEditable] = useState(false);
-  const inputRef = useRef(null);
+  // Set up drag functionality using react-dnd
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: ItemTypes.BUTTON, // Type of draggable item
+      item: { id, type: ItemTypes.BUTTON, left, top }, // Data about the draggable item
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(), // Track dragging state
+      }),
+    }),
+    [id, left, top]
+  );
 
-  const onChangeButtonText = () => {
-    setIsButtonTextEditable(true);
-  };
+  const handleDoubleClick = () => setEditing(true); // Enable editing mode on double-click
+
+  useEffect(() => {
+    if (isPreviewMode) {
+      if (editing && inputRef.current) {
+        inputRef.current.focus(); // Focus on the input if in preview mode and editing
+      }
+    }
+  }, [editing, isPreviewMode]);
 
   useEffect(() => {
     if (!isPreviewMode) {
       const handleClickOutside = (event) => {
         if (inputRef.current && !inputRef.current.contains(event.target)) {
-          setIsButtonTextEditable(false); // Disable editing mode if click occurs outside input
-          if (buttonText === "") {
-            setButtonText("Click Me");
-          }
+          setEditing(false); // Disable editing mode if click occurs outside input
         }
       };
 
-      if (isButtonTextEditable) {
+      if (editing) {
         document.addEventListener("mousedown", handleClickOutside);
       } else {
         document.removeEventListener("mousedown", handleClickOutside);
@@ -33,39 +48,46 @@ const ButtonComponent = ({ isPreviewMode, removeComponent, id }) => {
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }
-  }, [isButtonTextEditable, isPreviewMode, buttonText]);
+  }, [editing, isPreviewMode]);
 
   return (
-    <div>
-      {isPreviewMode ? (
+    <div
+      onDoubleClick={!isPreviewMode ? handleDoubleClick : () => {}}
+      style={getDraggingStyles(left, top, isDragging, false, isPreviewMode)}
+      className="relative"
+      ref={!isPreviewMode ? drag : null}
+    >
+      {editing ? (
         <>
-          <button onClick={() => toast.success("button clicked")}>
-            {buttonText}
-          </button>
+          <input
+            ref={inputRef}
+            value={text}
+            onChange={(e) => setText(e.target.value)} // Update text state on input change
+            className="p-2 bg-white border border-gray-500 w-[150px]"
+          />
         </>
-      ) : isButtonTextEditable ? (
-        <input
-          className="input-btn"
-          type="text"
-          value={buttonText}
-          onChange={(e) => setButtonText(e.target.value)}
-          ref={inputRef}
-          onBlur={() => setIsButtonTextEditable(false)} // Close the input after editing.
-          autoFocus // Automatically focuses the input when editable.
-        />
       ) : (
         <>
-          <div style={{ position: "relative" }}>
-            <span className="remove-icon" onClick={() => removeComponent(id)}>
-              X
-            </span>
-            <button onDoubleClick={onChangeButtonText}>{buttonText}</button>
-          </div>
+          {!isPreviewMode && (
+            <div
+              onClick={() => onRemove(id)}
+              className="absolute top-[-8px] right-[-8px] p-1 bg-red-500 text-white rounded-full cursor-pointer"
+            >
+              {/* <FaTimes size={10} /> */}
+            </div>
+          )}
+          <button
+            style={{ cursor: !isPreviewMode ? "move" : "", outline: "none" }}
+            onClick={
+              isPreviewMode ? () => alert("Clicked on Button") : () => {}
+            }
+          >
+            {text}
+          </button>
         </>
-        // Double click to make text editable.
       )}
     </div>
   );
 };
 
-export default ButtonComponent;
+export default ButtonBox;
