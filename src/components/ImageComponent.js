@@ -1,6 +1,5 @@
 import React from "react";
 import { useDrag } from "react-dnd";
-import { getDraggingStyles, ItemTypes } from "./Canvas";
 import { ComponentTypes, getComponentStyle } from "./helper/Helper";
 
 const ImageComponent = ({ id, left, top, isPreviewMode, deleteComponent }) => {
