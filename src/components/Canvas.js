@@ -1,119 +1,119 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 import { useDrop } from "react-dnd";
 import ButtonComponent from "./ButtonComponent";
 import ImageComponent from "./ImageComponent";
 import TextEditor from "./TextEditor";
-
-export const ItemTypes = {
-  TEXT: "text",
-  IMAGE: "image",
-  BUTTON: "button",
-};
-
-export function getDraggingStyles(left, top, isDragging, isOutLine, isPreview) {
-  if (isPreview) {
-    return {
-      position: "absolute",
-      left,
-      top,
-      outline: "none",
-    };
-  }
-  return {
-    position: "absolute",
-    left,
-    top,
-    opacity: isDragging ? 0 : 1,
-    cursor: "move",
-    outline: isOutLine ? "" : "none",
-  };
-}
+import { ComponentTypes } from "./helper/Helper";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Canvas = ({ isPreviewMode }) => {
   const canvasRef = useRef(null);
   const [components, setComponents] = useState([]);
+  const isPreviewModeRef = useRef(isPreviewMode);
 
+  // Adjusts the position of components within canvas bounds
+  const adjustPosition = (left, top, width, height) => {
+    const canvas = canvasRef.current?.getBoundingClientRect();
+    if (!canvas) return { left, top };
+
+    left = Math.max(0, Math.min(left, canvas.width - width));
+    top = Math.max(0, Math.min(top, canvas.height - height));
+    return { left, top };
+  };
+
+  // Moves a component
   const moveBox = useCallback(
     (id, left, top) => {
-      const canvas = canvasRef.current?.getBoundingClientRect();
-      if (canvas) {
-        const component = components.find((comp) => comp.id === id);
-        const elementWidth = component?.width || 0;
-        const elementHeight = component?.height || 0;
+      const component = components.find((comp) => comp.id === id);
+      if (component) {
+        const { left: newLeft, top: newTop } = adjustPosition(
+          left,
+          top,
+          component.width,
+          component.height
+        );
 
-        left = Math.max(0, Math.min(left, canvas.width - elementWidth));
-        top = Math.max(0, Math.min(top, canvas.height - elementHeight));
+        setComponents((prevComponents) =>
+          prevComponents.map((component) =>
+            component.id === id
+              ? { ...component, left: newLeft, top: newTop }
+              : component
+          )
+        );
       }
-
-      setComponents((prevComponents) =>
-        prevComponents.map((component) =>
-          component.id === id ? { ...component, left, top } : component
-        )
-      );
     },
     [components]
   );
 
+  // Updates the preview mode reference
+  useEffect(() => {
+    isPreviewModeRef.current = isPreviewMode;
+  }, [isPreviewMode]);
+
+  // Adds a new component to the canvas
   const addComponent = useCallback((type, left, top) => {
-    const canvas = canvasRef.current?.getBoundingClientRect();
-    if (canvas) {
-      const elementWidth = 340; // Default width for text and image components
-      const elementHeight = 50; // Default height
+    const { left: newLeft, top: newTop } = adjustPosition(left, top, 340, 50);
+    const id = `${type}-${Date.now()}`;
 
-      left = Math.max(0, Math.min(left, canvas.width - elementWidth));
-      top = Math.max(0, Math.min(top, canvas.height - elementHeight));
-    }
-
-    const id = `${type}-${Date.now()}`; // Unique ID
     setComponents((prevComponents) => [
       ...prevComponents,
-      { type, left, top, id, width: 340, height: 50 }, // Default width and height
+      { type, left: newLeft, top: newTop, id, width: 340, height: 50 },
     ]);
   }, []);
 
+  // Drop handler for components
   const [, drop] = useDrop(
     () => ({
-      accept: [ItemTypes.BUTTON, ItemTypes.TEXT, ItemTypes.IMAGE],
+      accept: [
+        ComponentTypes.BUTTON,
+        ComponentTypes.TEXT,
+        ComponentTypes.IMAGE,
+      ],
       drop: (item, monitor) => {
+        if (isPreviewModeRef.current) {
+          toast.error("Dragging is not allowed in preview mode.");
+          return;
+        }
         const currentClientOffset = monitor.getClientOffset();
         const canvas = canvasRef.current?.getBoundingClientRect();
 
         if (currentClientOffset && canvas) {
-          let left = currentClientOffset.x - canvas.left; // Calculate drop position within the canvas
+          let left = currentClientOffset.x - canvas.left;
           let top = currentClientOffset.y - canvas.top;
 
-          const elementWidth = item.width || 0;
-          const elementHeight = item.height || 0;
+          const elementWidth = item.width || 340;
+          const elementHeight = item.height || 50;
 
-          // Adjust for the element's width and height
           left -= elementWidth / 2;
           top -= elementHeight / 2;
 
-          left = Math.max(0, Math.min(left, canvas.width - elementWidth));
-          top = Math.max(0, Math.min(top, canvas.height - elementHeight));
+          const { left: newLeft, top: newTop } = adjustPosition(
+            left,
+            top,
+            elementWidth,
+            elementHeight
+          );
 
-          if (!item?.id) {
-            addComponent(item.type, left, top);
-          } else {
-            moveBox(item.id, left, top);
-          }
+          item.id
+            ? moveBox(item.id, newLeft, newTop)
+            : addComponent(item.type, newLeft, newTop);
         }
       },
     }),
     [moveBox, addComponent]
   );
 
-  const onRemoveComponent = (id) => {
-    const confirmRemoval = window.confirm(
-      "Are you sure you want to remove this component?"
-    );
-    if (confirmRemoval) {
+  // Deletes a component
+  const deleteComponent = (id) => {
+    if (window.confirm("Are you sure you want to remove this component?")) {
       setComponents((prevComponents) =>
         prevComponents.filter((comp) => comp.id !== id)
       );
     }
   };
 
+  // Ref callback for the drop target
   const canvasRefCallback = useCallback(
     (node) => {
       if (node) {
@@ -129,43 +129,27 @@ const Canvas = ({ isPreviewMode }) => {
       ref={!isPreviewMode ? canvasRefCallback : null}
       className="canvas"
       style={{
-        border: "1px solid gray",
         backgroundColor: isPreviewMode ? "white" : "transparent",
       }}
     >
       {components.map((component) => {
-        switch (component.type) {
-          case ItemTypes.TEXT:
-            return (
-              <TextEditor
-                key={component.id}
-                {...component}
-                isPreviewMode={isPreviewMode}
-                onRemove={onRemoveComponent}
-              />
-            );
-          case ItemTypes.IMAGE:
-            return (
-              <ImageComponent
-                key={component.id}
-                {...component}
-                isPreviewMode={isPreviewMode}
-                onRemove={onRemoveComponent}
-              />
-            );
-          case ItemTypes.BUTTON:
-            return (
-              <ButtonComponent
-                key={component.id}
-                {...component}
-                isPreviewMode={isPreviewMode}
-                onRemove={onRemoveComponent}
-              />
-            );
-          default:
-            return null;
-        }
+        const ComponentMap = {
+          [ComponentTypes.TEXT]: TextEditor,
+          [ComponentTypes.IMAGE]: ImageComponent,
+          [ComponentTypes.BUTTON]: ButtonComponent,
+        };
+
+        const Component = ComponentMap[component.type];
+        return Component ? (
+          <Component
+            key={component.id}
+            {...component}
+            isPreviewMode={isPreviewMode}
+            deleteComponent={deleteComponent}
+          />
+        ) : null;
       })}
+      <ToastContainer />
     </div>
   );
 };

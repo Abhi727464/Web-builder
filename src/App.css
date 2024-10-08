@@ -18,10 +18,11 @@ App.css body {
 header {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 15px;
   background-color: #343a40;
   color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  align-items: center;
 }
 
 .preview-button {
@@ -32,10 +33,11 @@ header {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  height: 30px;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 .text-container {
-  width: 20%;
+  /* width: 20%; */
   position: relative;
 }
 .preview-button:hover {
@@ -49,21 +51,51 @@ header {
   font-size: 16px;
 }
 
-.builder {
-  display: flex;
-  padding: 20px;
+.app-container {
+  display: flex; /* Align children in a row */
+  transition: all 0.5s ease; /* Smooth transition for the entire container */
+  gap: 20px;
+  margin-top: 20px;
   justify-content: center;
-  align-items: flex-start;
 }
 
 .toolbar {
-  width: 20%;
+  width: 20%; /* Default width for toolbar */
   padding: 20px;
   background-color: #f8f9fa;
   border-right: 2px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease, width 0.5s ease; /* Include width in transition */
+  min-height: 560px; /* Maintain a minimum height */
+}
+
+.toolbar-hidden {
+  opacity: 0; /* Fade out */
+  transform: translateY(0px); /* Slide up */
+  pointer-events: none; /* Disable interactions when hidden */
+  width: 0; /* Collapse the width */
+}
+
+.canvas {
+  position: relative;
+  background-color: #f4f3f3;
+  margin: 0;
+  padding: 0;
+  border-radius: 10px;
+  min-height: 600px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  width: 80%; /* Default width for canvas */
+  transition: width 0.5s ease; /* Smooth width transition */
+}
+
+.full-width .toolbar {
+  width: 0; /* Collapse the toolbar width */
+}
+
+.full-width .canvas {
+  width: 100%; /* Expand canvas to full width */
 }
 
 .toolbar h2 {
@@ -88,30 +120,10 @@ header {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.canvas {
-  position: relative;
-  background-color: #ffffff;
-  /* padding: 20px; */
-  /* margin-left: 20px; */
-  margin: 0;
-  padding: 0;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  min-height: 600px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  transition: all 0.3s ease;
-}
-
 .canvas.hover {
   background-color: #e0f7fa;
   border-color: #00acc1;
 }
-
-.component {
-  /* margin: 10px; */
-}
-
 .text-editor,
 .img-box {
   border: 1px solid #ced4da;
@@ -119,13 +131,18 @@ header {
   border-radius: 8px;
   background-color: #f8f9fa;
   transition: background-color 0.3s ease, border-color 0.3s ease;
-  font-size: 16px;
+  font-size: 14px;
   outline: none;
+  width: 200px;
 }
 
 .text-editor:hover {
   background-color: #ffffff;
   border-color: #00b894;
+}
+.imgContainer {
+  /* width: 20%; */
+  position: relative;
 }
 
 .editor-controls {
@@ -165,14 +182,15 @@ button {
   position: absolute;
   top: -5px;
   right: -5px;
-
+  width: 18px;
+  height: 18px;
   font-weight: bold;
   cursor: pointer;
   background-color: red;
   color: white;
-  border-radius: 20px;
-  padding: 3px 5px;
-  font-size: 12px;
+  border-radius: 50%;
+  /* padding: 2px 5px; */
+  font-size: 14px;
 }
 button:hover {
   background-color: #74b9ff;

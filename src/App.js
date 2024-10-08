@@ -20,8 +20,12 @@ function App() {
             {isPreviewMode ? "Switch to Design Mode" : "Switch to Preview Mode"}
           </button>
         </header>
-        <div className="builder">
-          <Toolbar />
+        {/* <div className="builder">
+          <Toolbar isPreviewMode={isPreviewMode} />
+          <Canvas isPreviewMode={isPreviewMode} />
+        </div> */}
+        <div className={`app-container ${isPreviewMode ? "full-width" : ""}`}>
+          <Toolbar isPreviewMode={isPreviewMode} />
           <Canvas isPreviewMode={isPreviewMode} />
         </div>
       </div>

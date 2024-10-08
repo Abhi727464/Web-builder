@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import { useDrag } from "react-dnd";
-import { getDraggingStyles } from "./Canvas";
+import { getComponentStyle } from "./helper/Helper";
 
-const TextBox = ({ id, type, left, top, isPreview, onRemove }) => {
+const TextEditor = ({
+  id,
+  type,
+  left,
+  top,
+  isPreviewMode,
+  deleteComponent,
+}) => {
   const [text, setText] = useState("Enter the content input");
 
   const [{ isDragging }, drag] = useDrag(
@@ -19,24 +26,31 @@ const TextBox = ({ id, type, left, top, isPreview, onRemove }) => {
   return (
     <div
       className="text-container"
-      style={getDraggingStyles(left, top, isDragging, true, isPreview)}
-      ref={!isPreview ? drag : null}
+      style={{
+        ...getComponentStyle(left, top, isDragging, true, isPreviewMode),
+        pointerEvents: isPreviewMode ? "none" : "auto", // Set pointerEvents correctly
+      }}
+      ref={!isPreviewMode ? drag : null}
     >
-      {!isPreview && (
-        <div onClick={() => onRemove(id)}>
-          <span>x</span>
+      {!isPreviewMode && (
+        <div style={{ position: "relative" }}>
+          <span onClick={() => deleteComponent(id)} className="remove-icon">
+            x
+          </span>
         </div>
       )}
       <input
-        placeholder="placeholder"
+        placeholder="Please Enter Input"
         value={text}
         onChange={(e) => setText(e.target.value)}
         autoFocus
-        style={{ cursor: !isPreview ? "move" : "" }}
+        style={{
+          cursor: isPreviewMode ? "default" : "move", // Use "default" in preview mode
+        }}
         className="text-editor"
       />
     </div>
   );
 };
 
-export default TextBox;
+export default TextEditor;

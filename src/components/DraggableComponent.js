@@ -6,11 +6,12 @@ function DraggableComponent({ type, label, isPreviewMode }) {
     () => ({
       type,
       item: { type },
+      canDrag: !isPreviewMode, // Disable drag if in preview mode
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
     }),
-    [isPreviewMode]
+    [isPreviewMode] // Recalculate if preview mode changes
   );
 
   return (
@@ -19,7 +20,7 @@ function DraggableComponent({ type, label, isPreviewMode }) {
       className="draggable-item"
       style={{
         opacity: isDragging ? 0.5 : 1,
-        cursor: isPreviewMode ? "not-allowed" : "move",
+        cursor: isPreviewMode ? "not-allowed" : "move", // Change cursor to 'not-allowed' in preview mode
       }}
     >
       {label}

@@ -1,43 +1,50 @@
 import React from "react";
 import { useDrag } from "react-dnd";
-
-// import { FaTimes } from "react-icons/fa";
 import { getDraggingStyles, ItemTypes } from "./Canvas";
+import { ComponentTypes, getComponentStyle } from "./helper/Helper";
 
-const ImageBox = ({ id, left, top, isPreview, onRemove }) => {
-  // Set up drag functionality using react-dnd
+const ImageComponent = ({ id, left, top, isPreviewMode, deleteComponent }) => {
   const [{ isDragging }, drag] = useDrag(
     () => ({
-      type: ItemTypes.BUTTON, // Type of draggable item
-      item: { id, type: ItemTypes.BUTTON, left, top }, // Data about the draggable item
+      type: ComponentTypes.IMAGE, // Updated to IMAGE type
+      item: {
+        id,
+        type: ComponentTypes.IMAGE,
+        left,
+        top,
+        width: 340,
+        height: 50,
+      }, // Added width and height
       collect: (monitor) => ({
-        isDragging: monitor.isDragging(), // Track dragging state
+        isDragging: monitor.isDragging(),
       }),
     }),
-    [id, left, top] // Dependencies for the drag hook
+    [id, left, top]
   );
 
   return (
     <div
-      style={getDraggingStyles(left, top, isDragging, true, isPreview)}
-      className="w-[20%] relative"
-      ref={isPreview ? null : drag}
+      style={getComponentStyle(left, top, isDragging, true, isPreviewMode)}
+      className="imgContainer"
+      ref={isPreviewMode ? null : drag}
     >
-      {!isPreview && (
-        <div
-          onClick={() => onRemove(id)}
-          // className="absolute top-[-8px] right-[-8px] p-1 bg-red-500 text-white rounded-full cursor-pointer"
-        >
-          {/* <FaTimes size={10} /> */}
+      {!isPreviewMode && (
+        <div style={{ position: "relative" }}>
+          <span onClick={() => deleteComponent(id)} className="remove-icon">
+            x
+          </span>
         </div>
       )}
       <input
-        style={{ cursor: !isPreview ? "move" : "" }}
+        style={{
+          cursor: !isPreviewMode ? "move" : "",
+          pointerEvents: isPreviewMode ? "none" : "",
+        }}
+        className="img-box"
         type="file"
-        // className="w-full p-1 border-2 border-gray-500 bg-white"
       />
     </div>
   );
 };
 
-export default ImageBox;
+export default ImageComponent;

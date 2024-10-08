@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDrag } from "react-dnd";
-// import { FaTimes } from "react-icons/fa"; // FontAwesome icon for close button
-import { getDraggingStyles, ItemTypes } from "./Canvas";
+import { ComponentTypes, getComponentStyle } from "./helper/Helper";
+import { toast } from "react-toastify";
 
-const ButtonBox = ({ id, left, top, isPreviewMode, onRemove }) => {
+const ButtonComponent = ({ id, left, top, isPreviewMode, deleteComponent }) => {
   const [text, setText] = useState("Click me"); // State to store button text
   const [editing, setEditing] = useState(false); // State to manage editing mode
   const inputRef = useRef(null); // Reference to the input element
@@ -11,8 +11,15 @@ const ButtonBox = ({ id, left, top, isPreviewMode, onRemove }) => {
   // Set up drag functionality using react-dnd
   const [{ isDragging }, drag] = useDrag(
     () => ({
-      type: ItemTypes.BUTTON, // Type of draggable item
-      item: { id, type: ItemTypes.BUTTON, left, top }, // Data about the draggable item
+      type: ComponentTypes.BUTTON, // Type of draggable item
+      item: {
+        id,
+        type: ComponentTypes.BUTTON,
+        left,
+        top,
+        width: 150,
+        height: 40,
+      }, // Data about the draggable item
       collect: (monitor) => ({
         isDragging: monitor.isDragging(), // Track dragging state
       }),
@@ -29,12 +36,16 @@ const ButtonBox = ({ id, left, top, isPreviewMode, onRemove }) => {
       }
     }
   }, [editing, isPreviewMode]);
+  console.log(text, "text");
 
   useEffect(() => {
     if (!isPreviewMode) {
       const handleClickOutside = (event) => {
         if (inputRef.current && !inputRef.current.contains(event.target)) {
           setEditing(false); // Disable editing mode if click occurs outside input
+        }
+        if (text.trim() === "") {
+          setText("Click Me");
         }
       };
 
@@ -48,38 +59,37 @@ const ButtonBox = ({ id, left, top, isPreviewMode, onRemove }) => {
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }
-  }, [editing, isPreviewMode]);
+  }, [editing, isPreviewMode, text]);
 
   return (
     <div
       onDoubleClick={!isPreviewMode ? handleDoubleClick : () => {}}
-      style={getDraggingStyles(left, top, isDragging, false, isPreviewMode)}
+      style={getComponentStyle(left, top, isDragging, false, isPreviewMode)}
       className="relative"
       ref={!isPreviewMode ? drag : null}
     >
       {editing ? (
-        <>
-          <input
-            ref={inputRef}
-            value={text}
-            onChange={(e) => setText(e.target.value)} // Update text state on input change
-            className="p-2 bg-white border border-gray-500 w-[150px]"
-          />
-        </>
+        <input
+          ref={inputRef}
+          value={text}
+          onChange={(e) => setText(e.target.value)} // Update text state on input change
+          className="text-editor"
+        />
       ) : (
         <>
           {!isPreviewMode && (
-            <div
-              onClick={() => onRemove(id)}
-              className="absolute top-[-8px] right-[-8px] p-1 bg-red-500 text-white rounded-full cursor-pointer"
-            >
-              {/* <FaTimes size={10} /> */}
+            <div style={{ position: "relative" }}>
+              <span onClick={() => deleteComponent(id)} className="remove-icon">
+                x
+              </span>
             </div>
           )}
           <button
             style={{ cursor: !isPreviewMode ? "move" : "", outline: "none" }}
             onClick={
-              isPreviewMode ? () => alert("Clicked on Button") : () => {}
+              isPreviewMode
+                ? () => toast.success("Clicked on Button")
+                : () => {}
             }
           >
             {text}
@@ -90,4 +100,4 @@ const ButtonBox = ({ id, left, top, isPreviewMode, onRemove }) => {
   );
 };
 
-export default ButtonBox;
+export default ButtonComponent;
