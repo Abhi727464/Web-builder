@@ -2,11 +2,9 @@ import React from "react";
 import DraggableComponent from "./DraggableComponent";
 
 function Toolbar({ isPreviewMode }) {
-  console.log(isPreviewMode, "toolbar");
-
   return (
     <div className={`toolbar ${isPreviewMode ? "toolbar-hidden" : ""}`}>
-      <h2>Components</h2>
+      <h2>Draggable Components</h2>
       <DraggableComponent
         type="text"
         label="Text Box"

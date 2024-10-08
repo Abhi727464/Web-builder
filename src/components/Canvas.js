@@ -129,7 +129,7 @@ const Canvas = ({ isPreviewMode }) => {
       ref={!isPreviewMode ? canvasRefCallback : null}
       className="canvas"
       style={{
-        backgroundColor: isPreviewMode ? "white" : "transparent",
+        backgroundColor: isPreviewMode ? "#f4f6f6" : "white",
       }}
     >
       {components.map((component) => {
