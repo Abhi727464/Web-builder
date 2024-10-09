@@ -1,70 +1,96 @@
-# Getting Started with Create React App
+# WYSIWYG Web Page Builder
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A **WYSIWYG (What You See Is What You Get)** web page builder built with **React** and **react-dnd** for drag-and-drop functionality. This project allows users to drag and drop components such as text boxes, buttons, and images onto a canvas to create dynamic web pages.
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [File Structure](#file-structure)
+- [Available Scripts](#available-scripts)
+- [Contributing](#contributing)
+- [License](#license)
 
-### `npm start`
+## File Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+src/
+├── components/ # All reusable components for the project
+│ ├── ButtonComponent.js # Button component for drag-and-drop
+│ ├── Canvas.js # Canvas component that handles the drag-and-drop layout
+│ ├── DraggableComponent.js # Wrapper component to make elements draggable
+│ ├── ImageComponent.js # Image component for drag-and-drop
+│ ├── TextEditor.js # Text editor component for drag-and-drop
+│ ├── Toolbar.js # Toolbar containing options to drag components onto canvas
+│ └── helper/ # Helper functions and constants
+│ └── Helper.js # Helper file (used for item types, utility functions)
+│
+├── App.js # Main application component
+├── App.css # Global styles for the app
+├── index.js # Entry point for the React app
+├── index.css # Global CSS file
+├── reportWebVitals.js # Optional performance measurement utility
+└── setupTests.js # Configuration for tests (if applicable)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Project Overview
 
-### `npm test`
+The WYSIWYG Web Page Builder provides an interface for creating web pages by dragging and dropping elements (text, images, and buttons) onto a canvas. Once dropped, elements can be repositioned and resized. The project also supports two modes:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Edit Mode**: Allows users to drag, drop, and move elements around the canvas.
+- **Preview Mode**: Displays the built page without the ability to interact with or edit the elements.
 
-### `npm run build`
+## Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Drag-and-Drop** components onto the canvas.
+- **Text**, **Image**, and **Button** components.
+- **Edit Mode** and **Preview Mode** for building and viewing pages.
+- Ability to **remove** components from the canvas.
+- Components are constrained within the canvas to prevent overflow.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Technologies Used
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **React**: Front-end framework for building the UI.
+- **react-dnd**: Drag-and-drop functionality.
+- **HTML5 and CSS3**: For structuring and styling the web page.
+- **JavaScript (ES6+)**: Logic implementation.
+- **React Hooks**: For managing state and lifecycle methods.
 
-### `npm run eject`
+## Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Prerequisites
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Ensure you have the following installed on your local machine:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Node.js** (v12 or higher)
+- **npm** (v6 or higher) or **yarn** (v1.x or higher)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Steps to Install
 
-## Learn More
+1. Clone the repository to your local machine:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```bash
+   git clone https://github.com/your-repository-url.git
+   cd wysiwyg-web-page-builder
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Install the dependencies:
 
-### Code Splitting
+   ```bash
+   npm install
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+   or
 
-### Analyzing the Bundle Size
+   ```bash
+   yarn install
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Usage
 
-### Making a Progressive Web App
+To run the project locally, use the following command:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+npm start
+```
