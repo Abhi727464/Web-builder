@@ -1,10 +1,10 @@
-# web_page_builder
+# Web Page Builder
 
 ### Project Setup
 
 1. **Set Up of Project Structure**
 
-   - Create the necessary directories and files:
+   - Created the necessary directories and files:
 
      ```
      src/
@@ -14,6 +14,9 @@
      │   ├── TextEditor.js
      │   ├── ImageComponent.js
      │   └── ButtonComponent.js
+     |   └── helper/
+     |      └── Helper.js
+     |
      ├── App.js
      ├── index.js
      └── App.css
@@ -44,9 +47,18 @@
    npm run dev or yarn run dev
    ```
 
-## Usage
+## Features
 
-- Drag and drop components from the toolbar onto the canvas.
-- Edit, text directly on the canvas.
-- Upload files on the canvas.
-- Use the toggle button to switch between design mode and preview mode.
+- **Drag-and-Drop** components onto the canvas.
+- **Text**, **Image**, and **Button** components.
+- **Edit Mode** and **Preview Mode** for building and viewing pages.
+- Ability to **remove** components from the canvas.
+- Components are constrained within the canvas to prevent overflow.
+
+## Technologies Used
+
+- **React**: Front-end framework for building the UI.
+- **react-dnd**: Drag-and-drop functionality.
+- **HTML5 and CSS3**: For structuring and styling the web page.
+- **JavaScript (ES6+)**: Logic implementation.
+- **React Hooks**: For managing state and lifecycle methods.
