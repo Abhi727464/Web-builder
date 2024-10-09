@@ -2,20 +2,28 @@
 
 ### Project Setup
 
-1. **Set Up of Project Structure**
-   - Create the necessary directories and files:
-     ```
-     src/
-     ├── components/
-     │   ├── Canvas.js
-     │   ├── Toolbar.js
-     │   ├── TextBox.js
-     │   ├── ImageBox.js
-     │   └── ButtonBox.js
-     ├── App.js
-     ├── index.js
-     └── App.css
-     ```
+1.  **Set Up of Project Structure**
+
+    - Create the necessary directories and files:
+      ```     src/
+├── components/              # Reusable components
+│   ├── ButtonComponent.js    # Button component for drag-and-drop functionality
+│   ├── Canvas.js             # Main canvas area where components are dropped and arranged
+│   ├── DraggableComponent.js # Wrapper component that enables drag-and-drop for other elements
+│   ├── ImageComponent.js     # Image component for drag-and-drop
+│   ├── TextEditor.js         # Text editor component for adding and editing text
+│   ├── Toolbar.js            # Toolbar that allows users to select components to drag
+│   └── helper/               # Helper functions and constants
+│       └── Helper.js         # Utilities like`ItemTypes` for managing drag-and-drop logic
+      │
+      ├── App.js # Main application component
+      ├── App.css # Global CSS styles
+      ├── index.js # React entry point
+      ├── index.css # Global CSS styles
+      ├── reportWebVitals.js # Performance measurement utility
+      └── setupTests.js # Test setup configuration
+
+           ```
 
 ### Documentation
 
